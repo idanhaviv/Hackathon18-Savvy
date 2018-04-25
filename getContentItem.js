@@ -13,7 +13,7 @@ axios.get(`https://thewirecutter.com/search/${keyword}/feed/rss2/`)
   .then(response => {
     console.log("Receive response");
     var xml = response.data;
-    parseString(xml, function (err, result) {
+    parseString(xml, (err, result) => {
         console.dir(result.rss.channel[0].item[0]);
     });
 
