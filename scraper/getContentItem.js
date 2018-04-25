@@ -1,6 +1,16 @@
 const axios = require("axios");
 const parseString = require("xml2js").parseString;
 const cheerio = require("cheerio");
+var Db = require('mongodb').Db,
+  MongoClient = require('mongodb').MongoClient,
+  Server = require('mongodb').Server,
+  ReplSetServers = require('mongodb').ReplSetServers,
+  ObjectID = require('mongodb').ObjectID,
+  Binary = require('mongodb').Binary,
+  GridStore = require('mongodb').GridStore,
+  Grid = require('mongodb').Grid,
+  Code = require('mongodb').Code,
+  assert = require('assert');
 
 if (process.argv.length <= 2) {
   console.log("Usage: " + __filename + " keyword");
@@ -32,10 +42,26 @@ axios
         .map(x => x.item)[0]
         .map(contentItemResultMapper);
 
-      const firstContentItem = contentItems[0];
-      console.log(firstContentItem);
+      const mongoclient = MongoClient.connect("mongodb://savvy:savvy123@ds155299.mlab.com:55299/soluto-savvy", (err, client) => {
+        assert.equal(null, err);
+        const db = client.db('soluto-savvy')
+        contentItems.map((contentItem, index, contentItems) => {
+
+          db.collection('posts').update({link:contentItem.link}, { ...contentItem, tags: ['smart home', 'stupid home']}, {upsert:true}, function(err, result) {
+            console.log("err ", err)
+            
+            if (index == contentItems.length - 1) {
+              client.close();
+            }
+          });
+        })
+      })
     });
   })
   .catch(error => {
     console.log(error);
   });
+  
+
+
+  // var mongoclient = MongoClient.connect("mongodb://localhost:27017/local", (err, client) => {
