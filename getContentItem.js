@@ -9,7 +9,10 @@ if (process.argv.length <= 2) {
  
 var keyword = process.argv[2]
 
-// const contentItemResultMapper = (contentItem) => ({title: contentItem.title[0]})
+const imgUrlParser = (descriptionTag) => {
+    
+}
+
 const contentItemResultMapper = (contentItem) => ({title:contentItem.title[0], link: contentItem.link[0], pubDate: contentItem.pubDate[0], description: contentItem.description[0], content: contentItem['content:encoded'][0]})
 axios.get(`https://thewirecutter.com/search/${keyword}/feed/rss2/`)
   .then(response => {
@@ -17,15 +20,10 @@ axios.get(`https://thewirecutter.com/search/${keyword}/feed/rss2/`)
     var xml = response.data;
     parseString(xml, (err, result) => {
         const contentItemResult = result.rss.channel;
-        // const contentItems = contentItemResult.map(x => x.item).map((contentItem) => console.log("got item ", contentItem));
-        const contentItems = contentItemResult.map(x => x.item)[0].map(contentItemResultMapper)
+        // const contentItems = contentItemResult.map(x => x.item)[0].map(contentItemResultMapper)
+        const description = contentItemResult.map(x => x.item)[0][0].description[0]
         const firstContentItem = contentItems[0]
-        // console.dir(contentItems.length);
-        // console.log("title ", firstContentItem.title[0]);
-        // console.log("desc ", firstContentItem.description[0]);
-        // console.log("date ", firstContentItem.pubDate[0]);
-        // console.log(firstContentItem['content:encoded'][0]);
-        console.log(firstContentItem);
+        console.log(description);
     });
   })
   .catch(error => {
