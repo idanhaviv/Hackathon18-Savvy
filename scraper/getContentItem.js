@@ -9,21 +9,21 @@ if (process.argv.length <= 2) {
  
 var keyword = process.argv[2]
 
-const imgUrlParser = (descriptionTag) => {
-    
+const imgUrlExtractor = (descriptionTag) => {
+  const $ = cheerio.load(descriptionTag)
+  return $('img[class=image]').attr('src')
 }
 
-const contentItemResultMapper = (contentItem) => ({title:contentItem.title[0], link: contentItem.link[0], pubDate: contentItem.pubDate[0], description: contentItem.description[0], content: contentItem['content:encoded'][0]})
+const contentItemResultMapper = (contentItem) => ({title:contentItem.title[0], link: contentItem.link[0], pubDate: contentItem.pubDate[0], description: contentItem.description[0], content: contentItem['content:encoded'][0], imgUrl: imgUrlExtractor(contentItem.description[0])})
 axios.get(`https://thewirecutter.com/search/${keyword}/feed/rss2/`)
   .then(response => {
-    console.log("Receive response");
     var xml = response.data;
     parseString(xml, (err, result) => {
         const contentItemResult = result.rss.channel;
-        // const contentItems = contentItemResult.map(x => x.item)[0].map(contentItemResultMapper)
-        const description = contentItemResult.map(x => x.item)[0][0].description[0]
+        const contentItems = contentItemResult.map(x => x.item)[0].map(contentItemResultMapper)
+        
         const firstContentItem = contentItems[0]
-        console.log(description);
+        console.log(firstContentItem)
     });
   })
   .catch(error => {
@@ -31,10 +31,3 @@ axios.get(`https://thewirecutter.com/search/${keyword}/feed/rss2/`)
   });
 
 
-
-//   const $ = cheerio.load('<h2 class="title">Hello world</h2>')
-
-//   $('h2.title').text('Hello there!')
-//   $('h2').addClass('welcome')
-
-//   $.html()
