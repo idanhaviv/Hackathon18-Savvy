@@ -17,6 +17,9 @@ if (process.argv.length <= 2) {
   process.exit(-1);
 }
 
+var tags = process.argv.slice(2);
+console.log('input tags: ', tags);
+
 var keyword = process.argv[2];
 
 const imgUrlExtractor = descriptionTag => {
@@ -47,7 +50,7 @@ axios
         const db = client.db('soluto-savvy')
         contentItems.map((contentItem, index, contentItems) => {
 
-          db.collection('posts').update({link:contentItem.link}, { ...contentItem, tags: ['smart home', 'stupid home']}, {upsert:true}, function(err, result) {
+          db.collection('posts').update({link:contentItem.link}, { ...contentItem, tags}, {upsert:true}, function(err, result) {
             console.log("err ", err)
             
             if (index == contentItems.length - 1) {
