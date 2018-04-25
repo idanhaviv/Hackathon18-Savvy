@@ -9,7 +9,7 @@ if (process.argv.length <= 2) {
  
 var keyword = process.argv[2]
 
-axios.get('https://thewirecutter.com/search/galaxy-s9/feed/rss2/')
+axios.get(`https://thewirecutter.com/search/${keyword}/feed/rss2/`)
   .then(response => {
     console.log("Receive response");
     var xml = response.data;
