@@ -51,7 +51,7 @@ axios
         contentItems.map((contentItem, index, contentItems) => {
 
           db.collection('posts').update({link:contentItem.link}, { ...contentItem, tags}, {upsert:true}, function(err, result) {
-            console.log("err ", err)
+            assert.equal(null, err);
             
             if (index == contentItems.length - 1) {
               client.close();
